@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title><?php echo $controller->title; ?></title>
+
+        <?php if (\C::$debug): ?>
+            <?php include C::$root_abs . 'public_html/assets/skins/duke/styles.php'; ?>
+
+            <!--[if lt IE 9]>
+            <?php include C::$root_abs . 'public_html/assets/skins/duke/styles.ie.php'; ?>
+            <![endif]-->
+        <?php else: ?>
+            <link rel="stylesheet" href="<?php echo \C::$root; ?>assets/skins/duke/stylesheets/styles.css">
+            <!--[if lt IE 9]>
+              <link rel="stylesheet" href="<?php echo \C::$root; ?>assets/skins/duke/stylesheets/ie.css">
+            <![endif]-->
+        <?php endif; ?>
+
+    </head>
+    <body>
+
+        <nav class="navbar navbar-default navbar-static-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#duke-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="<?php echo $controller->link('duke'); ?>"><?php echo \C::$title; ?></a>
+                </div>
+                <div class="collapse navbar-collapse" id="duke-navbar-collapse-1">
+                    <?php echo \Cdc\Widget\Menu::render($controller->menu['menu'], $controller->menu['options'], coalesce($controller->index, \C::$matchedRoute->getName())); ?>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="<?php echo $controller->link('duke/logout'); ?>"><span class="fa fa-power-off"></span> Sair</a></li>
+                    </ul>
+
+
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <?php echo \Cdc\Widget\Breadcrumb::render($controller->breadcrumb['menu'], $controller->breadcrumb['options'], coalesce($controller->index, coalesce(\Nette\Utils\Arrays::get(\C::$matchedRoute->args, 'index', null), \C::$matchedRoute->getName())), $controller->lastBreadcrumb); ?>
+                    <h1><?php echo $controller->title; ?></h1>
+                    <?php display_system_events(); ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <?php echo $content; ?>
+                </div>
+            </div>
+        </div>
+
+
+        <?php if (\C::$debug):
+            ?>
+            <?php include C::$root_abs . 'public_html/assets/skins/duke/scripts.common.php'; ?>
+            <!--[if lt IE 9]>
+            <?php include C::$root_abs . 'public_html/assets/skins/duke/scripts.ie.php'; ?>
+            <![endif]-->
+        <?php else: ?>
+            <script src="<?php echo \C::$root; ?>assets/skins/duke/javascripts/scripts.common.js"></script>
+            <!--[if lt IE 9]>
+            <script src="<?php echo \C::$root; ?>assets/skins/duke/javascripts/scripts.ie.js"></script>
+            <![endif]-->
+            <script src="<?php echo \C::$root; ?>assets/skins/duke/javascripts/scripts.js"></script>
+        <?php endif; ?>
+        <?php echo $controller->js; ?>
+    </body>
+</html>

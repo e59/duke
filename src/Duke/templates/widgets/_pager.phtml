@@ -1,0 +1,56 @@
+<?php
+$count = $p->getPageCount();
+$current = $p->getPage();
+$tpl = '<li%s><a href="%s">%s</a></li>';
+
+
+if ($p->first) {
+    $classFirst = ' class="disabled"';
+    $linkFirst = '#';
+    $classPrev = ' class="disabled"';
+    $linkPrev = '#';
+} else {
+    $classFirst = '';
+    $linkFirst = $this->link($routeName, $get, array_merge($params, array('p' => 1)));
+    $classPrev = '';
+    $linkPrev = $this->link($routeName, $get, array_merge($params, array('p' => $current - 1)));
+}
+
+if ($p->last) {
+    $classLast = ' class="disabled"';
+    $linkLast = '#';
+    $classNext = ' class="disabled"';
+    $linkNext = '#';
+} else {
+    $classLast = '';
+    $linkLast = $this->link($routeName, $get, array_merge($params, array('p' => $count)));
+    $classNext = '';
+    $linkNext = $this->link($routeName, $get, array_merge($params, array('p' => $current + 1)));
+}
+
+
+$first = sprintf($tpl, $classFirst, $linkFirst, '&laquo;');
+$prev = sprintf($tpl, $classPrev, $linkPrev, '&lsaquo;');
+$next = sprintf($tpl, $classNext, $linkNext, '&rsaquo;');
+$last = sprintf($tpl, $classLast, $linkLast, '&raquo;');
+?>
+<ul class="pagination pull-right">
+    <?php echo $first; ?>
+    <?php echo $prev; ?>
+    <?php for ($i = 1; $i <= $count; $i++): ?>
+        <?php
+        if ($current == $i) {
+            $class = ' class="active"';
+            $link = 'javascript:void(0)';
+        } else {
+            $class = '';
+            $link = $this->link($routeName, $params, array_merge($get, array('p' => $i)));
+        }
+        ?>
+        <li<?php echo $class; ?>>
+            <a href="<?php echo $link; ?>"><?php echo $i; ?></a>
+        </li>
+    <?php endfor; ?>
+    <?php echo $next; ?>
+    <?php echo $last; ?>
+</ul>

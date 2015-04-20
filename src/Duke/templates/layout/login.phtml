@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Identificação</title>
+
+        <?php if (\C::$debug): ?>
+            <?php include C::$root_abs . 'public_html/assets/skins/duke/styles.php'; ?>
+
+            <!--[if lt IE 9]>
+            <?php include C::$root_abs . 'public_html/assets/skins/duke/styles.ie.php'; ?>
+            <![endif]-->
+        <?php else: ?>
+            <link rel="stylesheet" href="<?php echo \C::$root; ?>assets/skins/duke/stylesheets/styles.css">
+            <!--[if lt IE 9]>
+              <link rel="stylesheet" href="<?php echo \C::$root; ?>assets/skins/duke/stylesheets/ie.css">
+            <![endif]-->
+        <?php endif; ?>
+
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <?php display_system_events(); ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4">
+                    <?php echo $content; ?>
+                </div>
+            </div>
+
+
+            <?php if (\C::$debug): ?>
+                <?php include C::$root_abs . 'public_html/assets/skins/duke/scripts.common.php'; ?>
+                <!--[if lt IE 9]>
+                <?php include C::$root_abs . 'public_html/assets/skins/duke/scripts.ie.php'; ?>
+                <![endif]-->
+            <?php else: ?>
+                <script src="<?php echo \C::$root; ?>/assets/skins/duke/javascripts/scripts.common.js"></script>
+                <!--[if lt IE 9]>
+                <script src="<?php echo \C::$root; ?>/assets/skins/duke/javascripts/scripts.ie.js"></script>
+                <![endif]-->
+                <script src="<?php echo \C::$root; ?>/assets/skins/duke/javascripts/scripts.js"></script>
+            <?php endif; ?>
+    </body>
+</html>

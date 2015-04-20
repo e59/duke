@@ -1,0 +1,43 @@
+<?php display_system_events(); ?>
+<?php if ($list): ?>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th><i class="fa fa-eye"</th>
+                <th>Nome original</th>
+                <th>Data de envio</th>
+                <th><i class="fa fa-cogs"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ((array) $list as $row): ?>
+                <?php if ($row['preset_id'] !== $preset_id) continue; ?>
+                <tr>
+                    <?php if ($row['imagem']): ?>
+                        <td>
+                            <a class="image-zoom" href="<?php echo C::$upload . $row['nome']; ?>">
+                                <img src="<?php echo C::$upload . $definition->ensurePreset($row, '___thumb___'); ?>">
+                            </a>
+                        </td>
+                    <?php else: ?>
+                        <td><a class="btn btn-default" target="_blank" href="<?php echo C::$upload . $row['nome']; ?>"><span class="fa fa-download"></span></a></td>
+                    <?php endif; ?>
+                    <td><?php echo $row['nome_original']; ?></td>
+                    <td><?php echo date(C::$dateTimeFormat, strtotime($row['criado'])); ?></td>
+                    <td>
+                        <button type="button" data-preset="<?php echo $preset; ?>" data-id="<?php echo $row['id']; ?>" class="filemanager-delete btn btn-large btn-danger"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <script>
+        $('.image-zoom').magnificPopup({
+            type: 'image',
+            closeOnContentClick: true,
+            image: {
+                verticalFit: false
+            }
+        });
+    </script>
+<?php endif; ?>
