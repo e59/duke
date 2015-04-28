@@ -3,6 +3,7 @@
 namespace Duke\Crud;
 
 use \Duke\Definition as D;
+use Nette\Utils\Arrays as A;
 
 class Delete extends Base {
 
@@ -17,6 +18,12 @@ class Delete extends Base {
         } else {
             $definition = new \Duke\Definition;
         }
+
+
+        $up = $this->up or $up = A::get(\C::$matchedRoute->args, 'up', array());
+
+        $parentData = $this->parentData or $parentData = $this->parentData($definition, $up);
+
 
         $operation = $this->operation;
 
@@ -57,6 +64,7 @@ class Delete extends Base {
         ob_start();
         include $this->getTemplate($template);
         $result['text'] = ob_get_clean();
+        $result['parentData'] = $parentData;
 
         return $result;
     }

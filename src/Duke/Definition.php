@@ -17,6 +17,10 @@ class Definition extends \Cdc\Definition {
      */
     private $_presets;
 
+    public function textBlock($rowset, $options = array()) {
+        return null;
+    }
+
     public function options($row, $rowset, $options = array()) {
         $text = '';
 

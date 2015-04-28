@@ -159,6 +159,10 @@ class Controller extends \Cdc\Controller {
             $routeName = $this->index;
         }
 
+        if (!$routeName) {
+            $routeName = C::$matchedRoute->getName();
+        }
+
         ob_start();
         include $this->getTemplate('widgets/_pager.phtml');
         return ob_get_clean();

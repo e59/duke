@@ -58,6 +58,10 @@ abstract class Base extends \Duke\Controller {
 
     public $fileManager = false;
 
+    public $up = array();
+
+    public $parentData = array();
+
     public $pageSize = 50;
 
     public function __construct($method = null, $params = null) {
@@ -68,6 +72,54 @@ abstract class Base extends \Duke\Controller {
         if (null === $params) {
             $this->params = \C::$matchedRoute->getParameters();
         }
+    }
+
+    public function parentData($definition, $up = array()) {
+
+        if (!$up) {
+            return array();
+        }
+
+        $routeUp = A::get($up, 'route');
+
+        $parentDefinition = A::get($up, 'definition');
+        $paramName = A::get($up, 'parameter');
+
+
+        // definition pai
+        $d = $this->getDefinition($parentDefinition);
+
+        // tabela do registro pai
+        $parent_table = $d->query(D::TYPE_RELATION)->fetch(D::MODE_SINGLE);
+
+        // título para o registro pai
+        $parent_title = $d->query(D::TYPE_COLUMN)->byTag('title')->fetch(D::MODE_SINGLE);
+
+        // nome da coluna relacionada nesta listagem
+        $related_column = $definition->query(D::TYPE_COLUMN)->byTag('related-' . $parent_table)->fetch(D::MODE_SINGLE);
+
+        // parametros da url
+        $parameters = $this->params;
+
+        // id do pai
+        $parent_id = A::get($parameters, $paramName);
+        $parent_primary = $d->query(D::TYPE_COLUMN)->byTag('primary')->fetch(D::MODE_SINGLE);
+
+        // registro do pai
+        $select = new \Cdc\Sql\Select(C::connection());
+        $relatedRecord = $select->cols(array('*'))->from(array($parent_table))->where(array($parent_primary . ' =' => $parent_id))->stmt()->fetch();
+        $parentFilter = array($related_column => $parent_id);
+
+        $routes = A::get($this->options, 'routes');
+        $routeRead = A::get($routes, 'read');
+        $breadcrumb = array(
+            \C::$menuFactory->createItem($relatedRecord[$parent_title]),
+            \C::$menuFactory->createItem(label(get_class($definition)), array(
+                'uri' => $this->link($routeRead, $parentFilter),
+            )),
+        );
+
+        return compact('parentFilter', 'breadcrumb', 'item', 'routeUp');
     }
 
     abstract public function exec();
@@ -250,15 +302,23 @@ abstract class Base extends \Duke\Controller {
 
         $id = $this->id;
 
+        $up = $this->up or $up = A::get(\C::$matchedRoute->args, 'up', array());
+
+        $parentData = $this->parentData or $parentData = $this->parentData($definition, $up);
+
+        if ($parentData) {
+            $fixedData = A::mergeTree($this->fixedData, $parentData['parentFilter']);
+        }
+
         if ($this->input) {
             $input = $this->input;
         } else {
             if ($update) {
                 $item = $this->item($definition, $id);
-                $input = array_merge($definition->mergeInput($item, $this->post), $this->fixedData);
+                $input = array_merge($definition->mergeInput($item, $this->post), $fixedData);
             } else {
                 $item = array();
-                $input = array_merge($this->post, $this->fixedData);
+                $input = array_merge($this->post, $fixedData);
             }
         }
 
@@ -317,6 +377,7 @@ abstract class Base extends \Duke\Controller {
         $form = new $this->formClass($def, $options, $input);
 
         $result['text'] = $form->render($this->getTemplate($template));
+        $result['parentData'] = $parentData;
 
         return $result;
     }
