@@ -79,7 +79,7 @@ class Crud extends \Duke\Controller {
 
         $textBlock = $definition->textBlock($result['data'], $c->options);
 
-        return $textBlock . $searchResult['text'] . csprintf($result['text'], $hasItems);
+        return $textBlock . $searchResult['text'] . ' ' . csprintf($result['text'], $hasItems);
     }
 
     public function createAction() {

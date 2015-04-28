@@ -178,7 +178,11 @@ abstract class Base extends \Duke\Controller {
                     // @TODO: flash user about broken file?
                     continue;
                 }
-                $nf = $definition->saveFile($item, $file, $preset);
+                try {
+                    $nf = $definition->saveFile($item, $file, $preset);
+                } catch (\Exception $e) {
+                    var_dump($e);die;
+                }
                 $newFiles[$preset][$nf['id']] = $nf;
             }
         }
@@ -308,6 +312,8 @@ abstract class Base extends \Duke\Controller {
 
         if ($parentData) {
             $fixedData = A::mergeTree($this->fixedData, $parentData['parentFilter']);
+        } else {
+            $fixedData = $this->fixedData;
         }
 
         if ($this->input) {
