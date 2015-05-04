@@ -138,7 +138,7 @@ abstract class Base extends \Duke\Controller {
     public function fileList($definition, $template = null) {
 
         $preset = S::webalize(A::get($this->get, 'preset'));
-        $presets = $definition->getPresets();
+        $presets = $definition::getPresets();
         $preset_id = $presets[$preset]['id'];
 
         $item = $this->item($definition, null, true);
@@ -195,7 +195,7 @@ abstract class Base extends \Duke\Controller {
         $table = $definition->query(D::TYPE_RELATION)->fetch(D::MODE_SINGLE);
         $primary = $definition->query(D::TYPE_COLUMN)->byTag('primary')->fetch(D::MODE_SINGLE);
 
-        $presets = $definition->getPresets();
+        $presets = $definition::getPresets();
 
         foreach ($refs as $key => $ref) {
 

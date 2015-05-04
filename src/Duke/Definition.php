@@ -15,7 +15,7 @@ class Definition extends \Cdc\Definition {
      * Cache de presets de imagens. Why not?
      * @var array
      */
-    private $_presets;
+    private static $_presets;
 
     public function textBlock($rowset, $options = array()) {
         return null;
@@ -56,7 +56,7 @@ class Definition extends \Cdc\Definition {
      */
     public function saveFile($item, \Nette\Http\FileUpload $file, $preset) {
 
-        $presets = $this->getPresets();
+        $presets = static::getPresets();
 
         $col = $this->definition[$preset];
 
@@ -123,7 +123,7 @@ class Definition extends \Cdc\Definition {
             return;
         }
         if ($preset) {
-            $presets = $this->getPresets();
+            $presets = static::getPresets();
             $preset_id = $presets[$preset]['id'];
         } else {
             $preset_id = false;
@@ -152,16 +152,16 @@ class Definition extends \Cdc\Definition {
         $del->from(array('arquivo'))->where(array('id in' => $deleteList))->stmt();
     }
 
-    public function getPresets() {
-        if (!$this->_presets) {
+    public static function getPresets() {
+        if (!self::$_presets) {
             $select = new \Cdc\Sql\Select(C::connection());
             $p = $select->from(array('preset'))->cols(array('*'))->stmt();
             foreach ($p as $ar) {
                 $ar['metadados'] = json_decode($ar['metadados'], true);
-                $this->_presets[$ar['slug']] = $ar;
+                self::$_presets[$ar['slug']] = $ar;
             }
         }
-        return $this->_presets;
+        return self::$_presets;
     }
 
     public function getFile($row) {
@@ -183,7 +183,7 @@ class Definition extends \Cdc\Definition {
             $row = $teste;
         }
 
-        $presets = $this->getPresets();
+        $presets = static::getPresets();
 
         $metadata = $presets[$preset]['metadados'];
 
@@ -219,7 +219,7 @@ class Definition extends \Cdc\Definition {
             return $row['nome'];
         }
 
-        $presets = $this->getPresets();
+        $presets = static::getPresets();
         $p = A::get($presets, $preset);
         $metadata = A::get($p, 'metadados');
 
