@@ -28,11 +28,14 @@ class Crud extends \Duke\Controller {
 
         $crudObj = A::get($this->crudObjects, 'search', '\Duke\Crud\Search');
 
+        $definition = $this->getDefinition(A::get(C::$matchedRoute->args, 'definition'));
+
         $s = new $crudObj;
         $s->options = A::get(C::$matchedRoute->args, 'options');
         $s->get = \C::$request->getQuery();
+
         $s->operation = 'read';
-        $s->definition = $this->getDefinition(A::get(C::$matchedRoute->args, 'definition'));
+        $s->definition = $definition;
 
         $searchResult = $s->exec();
 
@@ -54,6 +57,12 @@ class Crud extends \Duke\Controller {
             $search = false;
         }
 
+        if ($searchResult['parentData']) {
+            $this->lastBreadcrumb = $searchResult['parentData']['breadcrumb'];
+
+            $this->index = $searchResult['parentData']['routeUp'];
+        }
+
         $result = $c->exec();
 
         $hasItems = !empty($result['data']);
@@ -68,7 +77,9 @@ class Crud extends \Duke\Controller {
             }
         }
 
-        return $searchResult['text'] . csprintf($result['text'], $hasItems);
+        $textBlock = $definition->textBlock($result['data'], $c->options);
+
+        return $textBlock . $searchResult['text'] . ' ' . csprintf($result['text'], $hasItems);
     }
 
     public function createAction() {
@@ -87,14 +98,32 @@ class Crud extends \Duke\Controller {
             $c->fileManager = true;
         }
 
+        $up = A::get(C::$matchedRoute->args, 'up', array());
+
+        if ($up) {
+            $paramName = A::get($up, 'parameter');
+            $paramValue = A::get($c->params, $paramName);
+            $redirect = array($c->options['routes']['read'], array($paramName => $paramValue));
+        } else {
+            $redirect = $c->options['routes']['read'];
+        }
+
         $result = $c->exec();
+
+        if ($result['parentData']) {
+            $this->lastBreadcrumb = $result['parentData']['breadcrumb'];
+            $this->index = $result['parentData']['routeUp'];
+        } else {
+            $this->index = \coalesce(A::get(C::$matchedRoute->args, 'index', null), $c->options['routes']['read']);
+        }
+        $this->lastBreadcrumb[] = C::$menuFactory->createItem('Novo');
 
         if (is_object($result['data'])) {
             flash($result['data']->getMessage(), LOG_ERR);
         } elseif (is_array($result['data'])) {
-            \Cdc\ConstraintMessagePrinter::event($result['data']->getMessages());
+            \Cdc\ConstraintMessagePrinter::event($result['data']);
         } elseif ($result['data']) {
-            $this->redirect($c->options['routes']['read'], array('O item foi criado.', LOG_SUCCESS));
+            $this->redirect($redirect, array('O item foi criado.', LOG_SUCCESS));
         }
 
         return $result['text'];
@@ -116,21 +145,38 @@ class Crud extends \Duke\Controller {
             $c->fileManager = true;
         }
 
+        $item = $c->item($definition);
+
+        $up = A::get(C::$matchedRoute->args, 'up', array());
+
+        if ($up) {
+            $paramName = A::get($up, 'parameter');
+            $c->params[$paramName] = $item[$paramName];
+            $redirect = array($c->options['routes']['read'], array($paramName => $item[$paramName]));
+        } else {
+            $redirect = $c->options['routes']['read'];
+        }
+
         $c->title = $definition->query(D::TYPE_COLUMN)->byTag('title')->fetch(D::MODE_SINGLE);
 
         $this->index = \coalesce(A::get(C::$matchedRoute->args, 'index', null), $c->options['routes']['read']);
 
-        $item = $c->item($definition);
-        $this->lastBreadcrumb = C::$menuFactory->createItem('Editar ' . $item[$c->title]);
-
         $result = $c->exec();
+
+        if ($result['parentData']) {
+            $this->lastBreadcrumb = $result['parentData']['breadcrumb'];
+            $this->index = $result['parentData']['routeUp'];
+        } else {
+            $this->index = \coalesce(A::get(C::$matchedRoute->args, 'index', null), $c->options['routes']['read']);
+        }
+        $this->lastBreadcrumb[] = C::$menuFactory->createItem('Editar ' . $item[$c->title]);
 
         if (is_object($result['data'])) {
             flash($result['data']->getMessage(), LOG_ERR);
         } elseif (is_array($result['data'])) {
-            \Cdc\ConstraintMessagePrinter::event($result['data']->getMessages());
+            \Cdc\ConstraintMessagePrinter::event($result['data']);
         } elseif ($result['data']) {
-            $this->redirect($c->options['routes']['read'], array('Edição concluída.', LOG_SUCCESS));
+            $this->redirect($redirect, array('Edição concluída.', LOG_SUCCESS));
         }
 
         return $result['text'];
@@ -149,19 +195,36 @@ class Crud extends \Duke\Controller {
         $c->definition = $definition = $this->getDefinition(A::get(C::$matchedRoute->args, 'definition'));
         $c->title = $definition->query(D::TYPE_COLUMN)->byTag('title')->fetch(D::MODE_SINGLE);
 
-        $this->index = \coalesce(A::get(C::$matchedRoute->args, 'index', null), $c->options['routes']['read']);
-
         $item = $c->item($definition);
-        $this->lastBreadcrumb = C::$menuFactory->createItem('Excluir ' . $item[$c->title]);
+
+        $up = A::get(C::$matchedRoute->args, 'up', array());
+
+        if ($up) {
+            $paramName = A::get($up, 'parameter');
+            $c->params[$paramName] = $item[$paramName];
+            $redirect = array($c->options['routes']['read'], array($paramName => $item[$paramName]));
+        } else {
+            $redirect = $c->options['routes']['read'];
+        }
 
         $result = $c->exec();
+
+        if ($result['parentData']) {
+            $this->lastBreadcrumb = $result['parentData']['breadcrumb'];
+            $this->index = $result['parentData']['routeUp'];
+        } else {
+            $this->index = \coalesce(A::get(C::$matchedRoute->args, 'index', null), $c->options['routes']['read']);
+        }
+        $this->lastBreadcrumb[] = C::$menuFactory->createItem('Excluir ' . $item[$c->title]);
+
+
 
         if (is_object($result['data'])) {
             flash($result['data']->getMessage(), LOG_ERR);
         } elseif (is_array($result['data'])) {
-            \Cdc\ConstraintMessagePrinter::event($result['data']->getMessages());
+            \Cdc\ConstraintMessagePrinter::event($result['data']);
         } elseif ($result['data']) {
-            $this->redirect($c->options['routes']['read'], array('O item foi excluído.', LOG_SUCCESS));
+            $this->redirect($redirect, array('O item foi excluído.', LOG_SUCCESS));
         }
 
         return $result['text'];

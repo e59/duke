@@ -18,6 +18,9 @@
               <link rel="stylesheet" href="<?php echo \C::$root; ?>assets/skins/duke/stylesheets/ie.css">
             <![endif]-->
         <?php endif; ?>
+            <script>
+                var PRESETS = <?php echo json_encode(\Duke\Definition::getPresets()); ?>;
+            </script>
 
     </head>
     <body>

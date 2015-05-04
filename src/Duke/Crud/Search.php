@@ -40,7 +40,16 @@ class Search extends Base {
 
         $resetUrl = $this->resetUrl or $resetUrl = $this->link(\C::$matchedRoute->getName());
 
+        $up = $this->up or $up = A::get(\C::$matchedRoute->args, 'up', array());
+
+        $parentData = $this->parentData or $parentData = $this->parentData($definition, $up);
+
         $input = A::get($this->get, 'search', array());
+
+        if ($parentData) {
+            $input = A::mergeTree($input, $parentData['parentFilter']);
+            $result['parentData'] = $parentData;
+        }
 
 
         $options['search_form'] = 'search';
@@ -51,8 +60,6 @@ class Search extends Base {
         $result['data'] = $definition->search($input, $def);
 
         $result['text'] = $form->render($this->getTemplate($template));
-
-
 
 
         return $result;
