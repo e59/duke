@@ -241,7 +241,7 @@ class Definition extends \Cdc\Definition {
 
         $dim = max(array($metadata['width'], $metadata['height']));
 
-        $canvas = I::fromBlank($dim, $dim);
+        $canvas = I::fromBlank($dim, $dim, array('red' => 0, 'green' => 0, 'blue' => 0, 'alpha' => 127));
         $canvas->place($image->resize($metadata['width'], $metadata['height'], I::FIT), '50%', '50%');
         $canvas->crop('50%', '50%', $metadata['width'], $metadata['height']);
         $canvas->save(C::$upload_abs . $presetName);
