@@ -2,12 +2,9 @@
     "name": "cangulo/duke",
     "description": "CRUD base.",
     "homepage": "http://calmaamigo.com/",
-    "version": "dev-master",
     "autoload": {
         "psr-0": {
             "Duke": "src/"
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
