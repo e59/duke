@@ -49,6 +49,8 @@ class Search extends Base {
         if ($parentData) {
             $input = A::mergeTree($input, $parentData['parentFilter']);
             $result['parentData'] = $parentData;
+        } else {
+            $result['parentData'] = false;
         }
 
 

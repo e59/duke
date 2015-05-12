@@ -57,7 +57,7 @@ class Crud extends \Duke\Controller {
             $search = false;
         }
 
-        if ($searchResult['parentData']) {
+        if (f($searchResult, 'parentData')) {
             $this->lastBreadcrumb = $searchResult['parentData']['breadcrumb'];
 
             $this->index = $searchResult['parentData']['routeUp'];
