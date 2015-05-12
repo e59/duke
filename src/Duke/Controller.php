@@ -194,4 +194,29 @@ class Controller extends \Cdc\Controller {
         return $p;
     }
 
+
+
+    public function createFiles($files) {
+        $result = array();
+        foreach ($files as $key => $value) {
+            $file = \C::$upload_abs . $value['nome'];
+            $temp = tempnam(sys_get_temp_dir(), 'tmp_');
+            \Nette\Utils\FileSystem::copy($file, $temp);
+            $init = array(
+                'name' => $value['nome_original'],
+                'type' => $value['mime'],
+                'size' => filesize($temp),
+                'tmp_name' => $temp,
+                'error' => UPLOAD_ERR_OK,
+            );
+            $result[] = new \Nette\Http\FileUpload($init);
+        }
+
+        return $result;
+
+    }
+
+
+
+
 }
