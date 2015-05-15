@@ -2,17 +2,16 @@
 
 namespace Duke\Controller;
 
-class Login extends \Cdc\Controller\Login {
+class Login extends \Cdc\Controller {
 
-    public $module = 'Duke';
-
-    public $loginDestination = 'duke';
-
-    public $logoutDestination = 'duke';
-
+    use \Cdc\Login;
+    
     public function __construct() {
 
         \C::$layoutTemplate = array('layout/login.phtml', 'Duke');
+        $this->module = 'Duke';
+        $this->loginDestination = 'duke';
+        $this->logoutDestination = 'duke';
 
         return parent::__construct();
     }
