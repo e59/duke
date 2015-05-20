@@ -33,11 +33,21 @@ class Database extends Nette\Object implements Nette\Security\IAuthenticator {
 
     protected $bypass = false;
 
+    protected $where = array();
+
     /**
      * Boolean column indicating if the user is active (i.e. not blocked, if he's blocked he can't login)
      * @var string
      */
     protected $activeColumn = 'ativo';
+
+    public function setWhere($value) {
+        $this->where = $value;
+    }
+
+    public function getWhere() {
+        return $this->where;
+    }
 
     public function setBypass($value) {
         $this->bypass = $value;
@@ -142,10 +152,8 @@ class Database extends Nette\Object implements Nette\Security\IAuthenticator {
         $sql = new S(C::connection());
         $sql->from = array($this->getUserTable());
         $sql->cols = array('*');
-        $sql->where = array(
-            $this->getUserColumn() . ' =' => $credentials['user'],
-        );
-
+        $sql->where = $this->getWhere();
+        $sql->where[$this->getUserColumn() . ' ='] = $credentials['user'];
         return $sql;
     }
 
@@ -165,7 +173,6 @@ class Database extends Nette\Object implements Nette\Security\IAuthenticator {
         );
 
         $sql = $this->getSql($goodCredentials);
-
 
         $row = \Cdc\ArrayHelper::current($this->getDefinition()->hydrated($sql));
 
