@@ -31,6 +31,8 @@ class MenuHelper {
                 'index' => $base . '/create',
             ),
         ));
+
+        return $subitem;
     }
 
 }
