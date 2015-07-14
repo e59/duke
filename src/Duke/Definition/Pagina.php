@@ -25,7 +25,7 @@ class Pagina extends \Duke\Definition {
                 'parent' => 'id',
                 'junction' => 'pagina_arquivo',
                 'id' => 'arquivo_id',
-                'extensions' => array('png', 'jpg', 'gif', 'pdf'),
+                'extensions' => array('png', 'jpg', 'jpeg', 'gif', 'pdf'),
                 'files' => \C::$request->getFiles(),
             )),
         );
