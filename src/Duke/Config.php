@@ -2,7 +2,7 @@
 
 namespace Duke;
 
-class Config implements \Iterator {
+class Config implements \Iterator, \ArrayAccess {
 
     public $items = array();
 
@@ -59,6 +59,27 @@ class Config implements \Iterator {
 
     public function valid() {
         return array_key_exists($this->position, $this->items);
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->items[$offset]);
+
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->items[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        throw new \Exception('Please don\'t do this');
+    }
+
+    public function offsetUnset($offset)
+    {
+        throw new \Exception('Please don\'t do this');
     }
 
 }

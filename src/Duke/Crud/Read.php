@@ -30,7 +30,9 @@ class Read extends Base {
 
         $table = $this->table or $table = \Cdc\Definition\MetadataFactory::table($definition);
 
-        $query = $this->query or $query = Select::instance()->from(array($table))->cols($cols);
+        $order = $this->order or $order = \Cdc\Definition\MetadataFactory::order($definition);
+
+        $query = $this->query or $query = Select::instance()->from(array($table))->cols($cols)->order($order);
 
         $page = A::get($this->get, 'p', 1);
 

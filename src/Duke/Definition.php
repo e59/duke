@@ -70,7 +70,7 @@ class Definition extends \Cdc\Definition {
         }
 
         $pathInfo = pathinfo($file->getName());
-        $ext = A::get($pathInfo, 'extension');
+        $ext = A::get($pathInfo, 'extension', 'jpg');
 
         $data = array(
             'nome_original' => $file->getName(),

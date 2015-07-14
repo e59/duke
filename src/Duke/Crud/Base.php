@@ -18,6 +18,8 @@ abstract class Base extends \Duke\Controller {
 
     public $rules = array();
 
+    public $order = array();
+
     public $get = array();
 
     public $post = array();
