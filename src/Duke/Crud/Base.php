@@ -351,7 +351,7 @@ abstract class Base extends \Duke\Controller {
             }
             if ($rules->invoke($input)) {
 
-                $readyData = $definition->prepareInput($input);
+                $readyData = $definition->prepareInput($input, $id);
 
                 // filter keys that don't belong.
                 $babyInput = array_intersect_key($readyData, array_flip($cols));
