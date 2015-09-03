@@ -10,6 +10,7 @@ class Index extends \Duke\Controller {
         $this->index = 'duke';
         $this->title = 'Início';
 
+        ob_start();
         include $this->getTemplate('index.phtml');
         return ob_get_clean();
     }
