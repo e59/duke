@@ -167,14 +167,20 @@ class Database extends Nette\Object implements Nette\Security\IAuthenticator {
         $username = reset($credentials);
         $password = end($credentials);
 
+        $row = false;
+
         $goodCredentials = array(
             'user' => $username,
             'password' => $password,
         );
 
-        $sql = $this->getSql($goodCredentials);
+        if ($username !== '' && $password !== '') {
 
-        $row = \Cdc\ArrayHelper::current($this->getDefinition()->hydrated($sql));
+            $sql = $this->getSql($goodCredentials);
+
+            $row = \Cdc\ArrayHelper::current($this->getDefinition()->hydrated($sql));
+
+        }
 
         if (!$row) {
             throw new Nette\Security\AuthenticationException('Email e/ou senha incorretos.', self::IDENTITY_NOT_FOUND);
