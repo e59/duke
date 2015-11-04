@@ -174,7 +174,7 @@ class Database extends Nette\Object implements Nette\Security\IAuthenticator {
             'password' => $password,
         );
 
-        if (!($username == '' || $password == '')) {
+        if ($username) {
 
             $sql = $this->getSql($goodCredentials);
 
