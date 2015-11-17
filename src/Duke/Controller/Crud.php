@@ -116,6 +116,11 @@ class Crud extends \Duke\Controller {
         } else {
             $this->index = \coalesce(A::get(C::$matchedRoute->args, 'index', null), $c->options['routes']['read']);
         }
+
+        if ($this->index) {
+            $redirect = $this->index;
+        }
+
         $this->lastBreadcrumb[] = C::$menuFactory->createItem('Novo');
 
         if (is_object($result['data'])) {
@@ -160,6 +165,10 @@ class Crud extends \Duke\Controller {
         $c->title = $definition->query(D::TYPE_COLUMN)->byTag('title')->fetch(D::MODE_SINGLE);
 
         $this->index = \coalesce(A::get(C::$matchedRoute->args, 'index', null), $c->options['routes']['read']);
+
+        if ($this->index) {
+            $redirect = $this->index;
+        }
 
         $result = $c->exec();
 
@@ -217,7 +226,9 @@ class Crud extends \Duke\Controller {
         }
         $this->lastBreadcrumb[] = C::$menuFactory->createItem('Excluir ' . $item[$c->title]);
 
-
+        if ($this->index) {
+            $redirect = $this->index;
+        }
 
         if (is_object($result['data'])) {
             flash($result['data']->getMessage(), LOG_ERR);
