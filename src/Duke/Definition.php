@@ -17,6 +17,8 @@ class Definition extends \Cdc\Definition {
      */
     private static $_presets;
 
+    public $saveFile_user_id = true;
+
     public function textBlock($rowset, $options = array()) {
         return null;
     }
@@ -72,10 +74,18 @@ class Definition extends \Cdc\Definition {
         $pathInfo = pathinfo($file->getName());
         $ext = A::get($pathInfo, 'extension', 'jpg');
 
+        if ($this->saveFile_user_id === true) {
+            $usuarioId = C::$user->id;    
+        } elseif ($this->saveFile_user_id === false) {
+            $usuarioId = null;
+        } else {
+            $usuaruiId = $this->saveFile_user_id;
+        }
+
         $data = array(
             'nome_original' => $file->getName(),
             'mime' => $file->getContentType(),
-            'usuario_id' => C::$user->id,
+            'usuario_id' => $usuarioId,
             'preset_id' => $presets[$preset]['id'],
         );
 
