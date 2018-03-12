@@ -9,7 +9,9 @@ use Nette,
     \Cdc\Sql\Select as S,
     \C as C;
 
-class Database extends Nette\Object implements Nette\Security\IAuthenticator {
+class Database implements Nette\Security\IAuthenticator {
+
+    use \Nette\SmartObject;
 
     protected $passwordColumn = 'senha';
 
